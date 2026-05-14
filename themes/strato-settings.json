@@ -1,6 +1,7 @@
 // ============================================================
-//  Antigravity Theme — STRATO (Dark Amber)
-//  Paste into: Ctrl+Shift+P → "Open User Settings (JSON)"
+//  Antigravity Theme - STRATO (Dark Amber)
+//  setup.ps1 applies this automatically. Kept here for manual use:
+//  Ctrl+Shift+P -> "Open User Settings (JSON)" -> paste.
 // ============================================================
 {
     "workbench.colorCustomizations": {

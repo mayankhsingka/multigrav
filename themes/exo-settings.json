@@ -1,6 +1,7 @@
 // ============================================================
-//  Antigravity Theme — EXO (Matrix Green)
-//  Paste into: Ctrl+Shift+P → "Open User Settings (JSON)"
+//  Antigravity Theme - EXO (Matrix Green)
+//  setup.ps1 applies this automatically. Kept here for manual use:
+//  Ctrl+Shift+P -> "Open User Settings (JSON)" -> paste.
 // ============================================================
 {
     "workbench.colorCustomizations": {

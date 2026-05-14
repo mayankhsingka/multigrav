@@ -1,139 +1,244 @@
-# 🌌 Antigravity Multi-Profile
+# 🌌 Multigrav — Multiple Antigravity Accounts on Windows
 
-Run multiple **Antigravity IDE** accounts simultaneously on Windows — each fully isolated with its own login, extensions, and settings.
+**Run 4 isolated Antigravity IDE accounts side-by-side on the same machine** — each with its own login, extensions, settings, and a color-coded title bar so you never confuse windows.
 
-> Built for power users running multiple Pro accounts side by side.
+Built for power users juggling multiple Antigravity Pro subscriptions.
+
+One PowerShell command. No admin. No installer. No patching.
+
+> _💡 Demo GIF coming soon — 4-window side-by-side capture._
 
 ---
 
-## ✨ What This Does
+## ✨ Why?
 
-- Creates **4 completely isolated Antigravity instances** on the same Windows machine
-- Each instance has its own login session, extensions, and settings
-- Named after atmospheric layers: **Tropo · Strato · Meso · Exo**
-- Includes distinct color themes per instance so you always know which is which
-- Includes a backup & restore script for your profiles
+- **Multiple Antigravity Pro accounts** — sign into 4 (or more) accounts at the same time. Work + personal + clients, all running in parallel.
+- **Hard isolation** — extensions, settings, history, and logins never bleed between profiles.
+- **Visual separation** — unique title-bar color per profile so the right window is obvious in the taskbar.
+- **One command** — no admin, no registry edits, no patching. Just PowerShell + a documented VS Code flag.
+
+### Why not Antigravity's built-in Profiles?
+
+Antigravity inherits VS Code Profiles, which swap *settings & extensions* inside a single login. Multigrav gives you *fully separate logins* — what built-in Profiles can't do. Use both together if you want.
 
 ---
 
 ## 🚀 Quick Start
 
-### Step 1 — Run the setup script
+Never touched PowerShell? No problem — this is a 3-step copy-paste.
 
-Open **PowerShell as Administrator** (`Win + S` → PowerShell → Right click → Run as Administrator)
+### Step 1 — Get the code
+
+Either:
+- **Clone it:** `git clone https://github.com/mayankhsingka/multigrav.git` (then `cd multigrav`)
+- **Or download the ZIP:** green **Code** button on GitHub → **Download ZIP** → unzip it → remember the folder.
+
+### Step 2 — Open PowerShell *in that folder*
+
+The simplest way: open the unzipped/cloned folder in File Explorer, then in the address bar at the top, type `powershell` and press Enter. A blue terminal will open *already inside that folder*.
+
+(Or: `Win` key → type "PowerShell" → Enter → then `cd "C:\path\to\multigrav"`.)
+
+### Step 3 — Run setup
+
+Paste these two lines, one at a time, pressing Enter after each:
 
 ```powershell
-# Clone the repo or just download setup.ps1
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned -Force
 .\scripts\setup.ps1
 ```
 
-> ⚠️ If your Antigravity is installed at a different path, update line 5 in `setup.ps1`:
-> ```powershell
-> $ag = "$env:LOCALAPPDATA\Programs\Antigravity\Antigravity.exe"
-> ```
-> Run this to find your exact path:
-> ```powershell
-> Get-ChildItem -Path "$env:LOCALAPPDATA", "$env:PROGRAMFILES" -Recurse -Filter "Antigravity.exe" -ErrorAction SilentlyContinue | Select-Object FullName
-> ```
+(The first line only needs to run once per machine — it lets PowerShell run unsigned scripts you've downloaded. It's a user-level setting, not admin-level.)
 
-### Step 2 — Launch your instances
+You should see output like:
 
-Open `C:\Users\YOUR_USERNAME\Antig\` — you'll find 4 shortcuts:
+```
+IDE        : Cursor
+Executable : C:\Users\you\AppData\Local\Programs\cursor\Cursor.exe
+Shortcuts  : C:\Users\you\IDEProfiles
+Profiles   : Tropo, Strato, Meso, Exo
 
-| Shortcut | Profile Folder |
+  [+] Tropo        -> C:\Users\you\.cursor-profile-tropo
+  [+] Strato       -> C:\Users\you\.cursor-profile-strato
+  [+] Meso         -> C:\Users\you\.cursor-profile-meso
+  [+] Exo          -> C:\Users\you\.cursor-profile-exo
+
+Done. Open C:\Users\you\IDEProfiles and launch each shortcut.
+```
+
+The script auto-detects your Antigravity installation and creates 4 isolated profiles, each with a different title-bar color:
+
+| Profile | Color |
 |---|---|
-| Antigravity Tropo | `.antigravity-tropo` |
-| Antigravity Strato | `.antigravity-strato` |
-| Antigravity Meso | `.antigravity-meso` |
-| Antigravity Exo | `.antigravity-exo` |
+| Tropo | 🔵 Deep Ocean Blue |
+| Strato | 🟤 Dark Amber |
+| Meso | 🟣 Deep Purple |
+| Exo | 🟢 Matrix Green |
 
-Launch each and sign into a different account.
+### Step 4 — Open them
 
-### Step 3 — Apply color themes
+Open `%USERPROFILE%\IDEProfiles\` in File Explorer. You'll see 4 shortcuts. Double-click each one and sign in with a different account. That's it.
 
-So you can instantly tell instances apart in the taskbar:
+---
 
-1. Open each instance
-2. Hit `Ctrl + Shift + P` → type **Open User Settings (JSON)**
-3. Paste the contents of the matching file from the `themes/` folder
-4. Save — title bar changes instantly, no restart needed
+## 🛠 Customizing
 
-| Instance | Color | Theme File |
-|---|---|---|
-| Tropo | 🔵 Deep Ocean Blue | `themes/tropo-settings.json` |
-| Strato | 🟤 Dark Amber | `themes/strato-settings.json` |
-| Meso | 🟣 Deep Purple | `themes/meso-settings.json` |
-| Exo | 🟢 Matrix Green | `themes/exo-settings.json` |
+```powershell
+# Custom profile names (any number, any labels):
+.\scripts\setup.ps1 -Names Work,Personal,Client
 
-### Step 4 — Separate taskbar windows
+# Explicit Antigravity path (if auto-detect missed it):
+.\scripts\setup.ps1 -ExePath "D:\Tools\Antigravity\Antigravity.exe"
 
-By default Windows groups all instances under one icon. To see them separately:
+# Skip auto-applied themes (set colors yourself):
+.\scripts\setup.ps1 -SkipThemes
 
-Right click Taskbar → **Taskbar Settings** → **Combine taskbar buttons** → set to **Never**
+# Shortcuts on the Desktop:
+.\scripts\setup.ps1 -ShortcutsDir "$env:USERPROFILE\Desktop"
+```
 
-Now each instance shows as a separate entry labeled by its open folder/file.
+Re-running `setup.ps1` is safe: existing `settings.json` files are not overwritten.
+
+---
+
+## ▶️ Launching
+
+```powershell
+.\scripts\launch-all.ps1                          # every profile
+.\scripts\launch-all.ps1 -Filter "Antigravity *"  # only Antigravity profiles
+```
+
+Or double-click any shortcut in `%USERPROFILE%\IDEProfiles\`.
 
 ---
 
 ## 💾 Backup & Restore
 
-Your login sessions and settings live in the profile folders. Back them up occasionally:
-
 ```powershell
-# Backup all 4 profiles into a single zip
+# Back up all profiles (keeps last 5 archives):
 .\scripts\backup.ps1
+
+# Restore latest:
+.\scripts\backup.ps1 -Action Restore
+
+# Restore a specific archive:
+.\scripts\backup.ps1 -Action Restore -From "C:\path\to\Profiles_Backup_2026-05-14_12-00.zip"
+
+# Back up only one IDE if you've set up several:
+.\scripts\backup.ps1 -Ide Antigravity
+
+# Keep everything forever:
+.\scripts\backup.ps1 -KeepLast 0
 ```
 
-Backup is saved to `C:\Users\YOUR_USERNAME\Antig\Backups\`
+Backups land in `%USERPROFILE%\IDEProfiles\Backups\`.
 
-To restore, open `backup.ps1` and change the last line from `Backup` to `Restore`, then run it.
+---
+
+## 🧹 Uninstall
+
+```powershell
+# Remove shortcuts only (profile data kept):
+.\scripts\uninstall.ps1
+
+# Remove shortcuts AND profile data (prompts to confirm):
+.\scripts\uninstall.ps1 -RemoveProfiles
+
+# Limit to one IDE if you've set up several:
+.\scripts\uninstall.ps1 -Ide Antigravity -RemoveProfiles
+```
+
+---
+
+## 🪟 Taskbar Tip
+
+By default Windows groups all instances under one icon. To see them separately:
+
+> Right-click Taskbar → **Taskbar Settings** → **Combine taskbar buttons** → **Never**
+
+---
+
+## 🧠 How It Works
+
+Each shortcut launches Antigravity with two first-class VS Code flags:
+
+```
+Antigravity.exe --user-data-dir="...\.antigravity-tropo" --extensions-dir="...\.antigravity-tropo\extensions"
+```
+
+- `--user-data-dir` isolates login, settings, history
+- `--extensions-dir` isolates installed extensions
+
+Antigravity inherits these from its VS Code base. Nothing is patched, hooked, or injected.
+
+---
+
+## 🧯 Troubleshooting
+
+**"...cannot be loaded because running scripts is disabled on this system."**
+Run once: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`
+
+**"No IDE found"**
+Pass the path explicitly:
+```powershell
+.\scripts\setup.ps1 -ExePath "C:\full\path\Antigravity.exe"
+```
+Or search for it:
+```powershell
+Get-ChildItem $env:LOCALAPPDATA, $env:ProgramFiles -Recurse -Filter Antigravity.exe -ErrorAction SilentlyContinue | Select-Object FullName
+```
+
+**Title-bar color didn't change**
+In that profile, hit `Ctrl+Shift+P` → **Developer: Reload Window**. If still nothing, verify `%USERPROFILE%\.<ide>-profile-<name>\User\settings.json` exists.
+
+**Windows SmartScreen warns about the .ps1**
+Right-click the file → Properties → **Unblock**. Or just paste the script body into a PowerShell window — same effect.
+
+**RAM usage**
+Each Electron instance uses ~300MB–1GB. Four instances ≈ 2–4GB. Keep an eye on memory.
 
 ---
 
 ## 📁 Repo Structure
 
 ```
-antigravity-multiprofile/
+.
 ├── scripts/
-│   ├── setup.ps1        # Creates 4 isolated profiles + shortcuts
-│   └── backup.ps1       # Backup & restore all profiles
-├── themes/
-│   ├── tropo-settings.json
-│   ├── strato-settings.json
-│   ├── meso-settings.json
-│   └── exo-settings.json
+│   ├── setup.ps1        # Multi-IDE setup: profiles + themed shortcuts
+│   ├── backup.ps1       # Back up / restore profile data
+│   ├── launch-all.ps1   # Open every profile at once
+│   └── uninstall.ps1    # Remove shortcuts (and optionally profile data)
+├── themes/              # Reference theme files (setup.ps1 applies them automatically)
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   └── PULL_REQUEST_TEMPLATE.md
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── LICENSE
 └── README.md
 ```
 
 ---
 
-## 🧠 How It Works
+## 🧩 Also works with other VS Code forks
 
-Antigravity (like all VS Code forks) stores everything about a session — login, extensions, settings — in a single folder. The `--user-data-dir` flag redirects where that folder is.
+Multigrav is built for Antigravity, but the same scripts work with any other VS Code fork (Cursor, VS Code, Windsurf), since they all support the `--user-data-dir` flag:
 
+```powershell
+.\scripts\setup.ps1 -Ide Cursor      # or VSCode, or Windsurf
+.\scripts\setup.ps1 -ExePath "<path-to-your-fork.exe>"
 ```
-Antigravity.exe --user-data-dir="C:\Users\YOU\.antigravity-tropo"
-```
 
-By pointing 4 instances at 4 different folders, they become completely independent. This is a built-in VS Code feature, not a hack.
-
----
-
-## ⚠️ Things to Know
-
-- **RAM usage** — Each Electron instance uses ~300MB–1GB RAM. 4 instances = 2–4GB. Keep an eye on your memory.
-- **Shortcuts are just launchers** — If you delete a shortcut, your profile data is safe. Recreate shortcuts anytime with `setup.ps1`.
-- **Profile folders are what matter** — Back these up if you care about your sessions and settings.
-- **Works on same PC only** — Shortcuts hardcode the path to `Antigravity.exe`. On a new PC, reinstall Antigravity and rerun `setup.ps1`.
+You'll get color-isolated profiles for those too. Not the focus of the project — but it's there if you need it.
 
 ---
 
 ## 🤝 Contributing
 
-Works for Cursor and other VS Code forks too — same `--user-data-dir` trick applies. PRs welcome!
+PRs welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Please test on fresh profile names (`-Names TestA,TestB`) so you don't clobber your own profiles while iterating.
 
 ---
 
 ## 📄 License
 
-MIT
+[MIT](LICENSE)
