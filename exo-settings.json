@@ -1,0 +1,11 @@
+// ============================================================
+//  Antigravity Theme — EXO (Matrix Green)
+//  Paste into: Ctrl+Shift+P → "Open User Settings (JSON)"
+// ============================================================
+{
+    "workbench.colorCustomizations": {
+        "titleBar.activeBackground": "#001a00",
+        "titleBar.activeForeground": "#00ff41",
+        "titleBar.inactiveBackground": "#001200"
+    }
+}

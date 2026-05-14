@@ -1,0 +1,11 @@
+// ============================================================
+//  Antigravity Theme — TROPO (Deep Ocean Blue)
+//  Paste into: Ctrl+Shift+P → "Open User Settings (JSON)"
+// ============================================================
+{
+    "workbench.colorCustomizations": {
+        "titleBar.activeBackground": "#003566",
+        "titleBar.activeForeground": "#ffffff",
+        "titleBar.inactiveBackground": "#002244"
+    }
+}

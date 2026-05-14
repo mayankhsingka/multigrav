@@ -1,0 +1,11 @@
+// ============================================================
+//  Antigravity Theme — STRATO (Dark Amber)
+//  Paste into: Ctrl+Shift+P → "Open User Settings (JSON)"
+// ============================================================
+{
+    "workbench.colorCustomizations": {
+        "titleBar.activeBackground": "#3b1f00",
+        "titleBar.activeForeground": "#ffffff",
+        "titleBar.inactiveBackground": "#2a1500"
+    }
+}

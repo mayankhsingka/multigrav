@@ -1,0 +1,11 @@
+// ============================================================
+//  Antigravity Theme — MESO (Deep Purple)
+//  Paste into: Ctrl+Shift+P → "Open User Settings (JSON)"
+// ============================================================
+{
+    "workbench.colorCustomizations": {
+        "titleBar.activeBackground": "#1a0033",
+        "titleBar.activeForeground": "#ffffff",
+        "titleBar.inactiveBackground": "#110022"
+    }
+}
