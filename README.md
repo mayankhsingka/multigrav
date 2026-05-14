@@ -10,6 +10,14 @@ One PowerShell command. No admin. No installer. No patching.
 
 ---
 
+## ⚡ 30-second pitch
+
+- **Who it's for:** anyone running 2+ Antigravity Pro accounts on Windows (work + personal, multiple clients, etc.).
+- **What it does:** one PowerShell command creates 4 isolated, color-coded Antigravity sessions you can run at the same time.
+- **Why not just sign out and back in?** Because that wipes your editor state — open files, extensions, terminal history, signed-in extensions. Multigrav keeps each account fully self-contained. Switch by clicking, not by logging out.
+
+---
+
 ## ✨ Why?
 
 - **Multiple Antigravity Pro accounts** — sign into 4 (or more) accounts at the same time. Work + personal + clients, all running in parallel.
@@ -35,9 +43,9 @@ Either:
 
 ### Step 2 — Open PowerShell *in that folder*
 
-The simplest way: open the unzipped/cloned folder in File Explorer, then in the address bar at the top, type `powershell` and press Enter. A blue terminal will open *already inside that folder*.
+Open the unzipped / cloned folder in File Explorer. **Click the address bar at the top, type `powershell`, and press Enter.** A blue terminal opens *already inside that folder* — no `cd` needed.
 
-(Or: `Win` key → type "PowerShell" → Enter → then `cd "C:\path\to\multigrav"`.)
+> _Alternate route: `Win` key → type "PowerShell" → Enter → then `cd "C:\path\to\multigrav"`._
 
 ### Step 3 — Run setup
 
@@ -53,31 +61,45 @@ Set-ExecutionPolicy -Scope CurrentUser RemoteSigned -Force
 You should see output like:
 
 ```
-IDE        : Cursor
-Executable : C:\Users\you\AppData\Local\Programs\cursor\Cursor.exe
+IDE        : Antigravity
+Executable : C:\Users\you\AppData\Local\Programs\Antigravity\Antigravity.exe
 Shortcuts  : C:\Users\you\IDEProfiles
 Profiles   : Tropo, Strato, Meso, Exo
 
-  [+] Tropo        -> C:\Users\you\.cursor-profile-tropo
-  [+] Strato       -> C:\Users\you\.cursor-profile-strato
-  [+] Meso         -> C:\Users\you\.cursor-profile-meso
-  [+] Exo          -> C:\Users\you\.cursor-profile-exo
+  [+] Tropo        -> C:\Users\you\.antigravity-tropo
+  [+] Strato       -> C:\Users\you\.antigravity-strato
+  [+] Meso         -> C:\Users\you\.antigravity-meso
+  [+] Exo          -> C:\Users\you\.antigravity-exo
 
 Done. Open C:\Users\you\IDEProfiles and launch each shortcut.
 ```
 
-The script auto-detects your Antigravity installation and creates 4 isolated profiles, each with a different title-bar color:
-
-| Profile | Color |
-|---|---|
-| Tropo | 🔵 Deep Ocean Blue |
-| Strato | 🟤 Dark Amber |
-| Meso | 🟣 Deep Purple |
-| Exo | 🟢 Matrix Green |
-
 ### Step 4 — Open them
 
-Open `%USERPROFILE%\IDEProfiles\` in File Explorer. You'll see 4 shortcuts. Double-click each one and sign in with a different account. That's it.
+Open `%USERPROFILE%\IDEProfiles\` in File Explorer. You'll see 4 shortcuts. Double-click each one and sign in with a different Antigravity account. That's it.
+
+### Power-user one-liner
+
+If you'd rather paste everything in one go:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned -Force; .\scripts\setup.ps1
+```
+
+---
+
+## 🎨 Your 4 profiles
+
+Each profile gets a unique title-bar color so the right window is obvious from the taskbar:
+
+| Profile  | Color              | Suggested use      |
+|----------|--------------------|--------------------|
+| Tropo    | 🔵 Deep Ocean Blue | Work account       |
+| Strato   | 🟤 Dark Amber      | Personal           |
+| Meso     | 🟣 Deep Purple     | Client A           |
+| Exo      | 🟢 Matrix Green    | Client B / sandbox |
+
+**Why those names?** Tropo / Strato / Meso / Exo are the layers of Earth's atmosphere — fitting for an editor called *Antigravity*. The names are pure convention; pass `-Names Work,Personal,...` if you'd rather use your own. See [Customizing](#-customizing).
 
 ---
 
@@ -93,11 +115,23 @@ Open `%USERPROFILE%\IDEProfiles\` in File Explorer. You'll see 4 shortcuts. Doub
 # Skip auto-applied themes (set colors yourself):
 .\scripts\setup.ps1 -SkipThemes
 
-# Shortcuts on the Desktop:
+# Put shortcuts on the Desktop instead:
 .\scripts\setup.ps1 -ShortcutsDir "$env:USERPROFILE\Desktop"
 ```
 
 Re-running `setup.ps1` is safe: existing `settings.json` files are not overwritten.
+
+---
+
+## 🎯 Common scenarios
+
+| You want… | Command |
+|---|---|
+| Only **2** profiles, not 4 | `.\scripts\setup.ps1 -Names Work,Personal` |
+| Your own profile names | `.\scripts\setup.ps1 -Names Acme,Globex,Initech` |
+| Add a 5th profile later | `.\scripts\setup.ps1 -Names Sandbox` *(adds Sandbox; existing profiles untouched)* |
+| Pick your own colors | `.\scripts\setup.ps1 -SkipThemes`, then in each window `Ctrl+,` → `colorCustomizations` |
+| Two installs (Antigravity + Insiders) | Run twice, once per `-ExePath`, with different `-Names` |
 
 ---
 
@@ -124,14 +158,14 @@ Or double-click any shortcut in `%USERPROFILE%\IDEProfiles\`.
 # Restore a specific archive:
 .\scripts\backup.ps1 -Action Restore -From "C:\path\to\Profiles_Backup_2026-05-14_12-00.zip"
 
-# Back up only one IDE if you've set up several:
+# Back up only Antigravity (if you've also tinkered with -Ide for another fork):
 .\scripts\backup.ps1 -Ide Antigravity
 
-# Keep everything forever:
+# Keep every backup forever:
 .\scripts\backup.ps1 -KeepLast 0
 ```
 
-Backups land in `%USERPROFILE%\IDEProfiles\Backups\`.
+Backups land in `%USERPROFILE%\IDEProfiles\Backups\`. To move profiles to a new machine, zip them here, copy the zip across, and run `backup.ps1 -Action Restore -From "<path-to-zip>"` on the new box.
 
 ---
 
@@ -141,11 +175,8 @@ Backups land in `%USERPROFILE%\IDEProfiles\Backups\`.
 # Remove shortcuts only (profile data kept):
 .\scripts\uninstall.ps1
 
-# Remove shortcuts AND profile data (prompts to confirm):
+# Remove shortcuts AND profile data (asks to confirm):
 .\scripts\uninstall.ps1 -RemoveProfiles
-
-# Limit to one IDE if you've set up several:
-.\scripts\uninstall.ps1 -Ide Antigravity -RemoveProfiles
 ```
 
 ---
@@ -189,7 +220,7 @@ Get-ChildItem $env:LOCALAPPDATA, $env:ProgramFiles -Recurse -Filter Antigravity.
 ```
 
 **Title-bar color didn't change**
-In that profile, hit `Ctrl+Shift+P` → **Developer: Reload Window**. If still nothing, verify `%USERPROFILE%\.<ide>-profile-<name>\User\settings.json` exists.
+In that profile, hit `Ctrl+Shift+P` → **Developer: Reload Window**. If still nothing, verify `%USERPROFILE%\.antigravity-<name>\User\settings.json` exists.
 
 **Windows SmartScreen warns about the .ps1**
 Right-click the file → Properties → **Unblock**. Or just paste the script body into a PowerShell window — same effect.
@@ -199,12 +230,34 @@ Each Electron instance uses ~300MB–1GB. Four instances ≈ 2–4GB. Keep an ey
 
 ---
 
+## ❓ FAQ
+
+**Is this safe? Will running 4 instances flag my Antigravity account?**
+You're not bypassing anything. Each instance signs into a separate account, just like opening 4 browsers and logging into 4 accounts. The technique (`--user-data-dir`) is a documented VS Code flag — Antigravity inherits it from its VS Code base.
+
+**Does this modify Antigravity itself?**
+No. Multigrav never touches the Antigravity install. It just creates extra data directories and shortcuts that point at the unmodified `Antigravity.exe`.
+
+**What happens when Antigravity updates?**
+Your profiles persist. Antigravity updates the executable in place; the profile folders (which contain only your data) keep working exactly as before.
+
+**Do extensions sync between profiles?**
+No — that's the whole point. Each profile has its own `extensions` folder. Install Copilot / your formatter / etc. once per profile.
+
+**Can I share profiles across machines?**
+Yes — `backup.ps1` zips them up, and `backup.ps1 -Action Restore -From "<zip>"` un-zips them on the new machine. You'll still need to sign in once on each.
+
+**What if I already have an Antigravity install I've been using?**
+Untouched. Your default install keeps using its existing data directory. Multigrav profiles live in `%USERPROFILE%\.antigravity-<name>\`, completely separate.
+
+---
+
 ## 📁 Repo Structure
 
 ```
 .
 ├── scripts/
-│   ├── setup.ps1        # Multi-IDE setup: profiles + themed shortcuts
+│   ├── setup.ps1        # Create profiles + themed shortcuts
 │   ├── backup.ps1       # Back up / restore profile data
 │   ├── launch-all.ps1   # Open every profile at once
 │   └── uninstall.ps1    # Remove shortcuts (and optionally profile data)
@@ -220,16 +273,11 @@ Each Electron instance uses ~300MB–1GB. Four instances ≈ 2–4GB. Keep an ey
 
 ---
 
-## 🧩 Also works with other VS Code forks
+## 🧩 About other IDEs
 
-Multigrav is built for Antigravity, but the same scripts work with any other VS Code fork (Cursor, VS Code, Windsurf), since they all support the `--user-data-dir` flag:
+Multigrav was originally a generic VS Code-fork multi-profile launcher — Cursor was a common use case in the early days. We've since narrowed focus to Antigravity. The `-Ide Cursor` / `-Ide VSCode` flags are still in the scripts as a legacy capability, but aren't tested or supported.
 
-```powershell
-.\scripts\setup.ps1 -Ide Cursor      # or VSCode, or Windsurf
-.\scripts\setup.ps1 -ExePath "<path-to-your-fork.exe>"
-```
-
-You'll get color-isolated profiles for those too. Not the focus of the project — but it's there if you need it.
+If you're a Cursor / VS Code / Windsurf user and Multigrav happens to work for you — great, but please file issues only for *Antigravity* breakage.
 
 ---
 
@@ -242,3 +290,7 @@ PRs welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Please test on fresh pro
 ## 📄 License
 
 [MIT](LICENSE)
+
+---
+
+⭐ **If Multigrav saved you the pain of signing in and out** — drop a star. It's the single biggest thing that helps other Antigravity users find it. Thanks!
